@@ -1,0 +1,12 @@
+# node and build stuff
+node_modules
+dist
+
+# environment & lock files
+.env
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# logs and temp
+*.log
