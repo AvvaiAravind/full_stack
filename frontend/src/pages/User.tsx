@@ -55,8 +55,8 @@ const User = () => {
 
       setIsLoading(true);
       try {
-        const response = await api.patch(`/api/users/${_id}`, data);
-        setUserData(response.data);
+        await api.patch(`/api/users/${_id}`, data);
+        handleGetUserById();
         setIsEditing(false);
       } catch (error: any) {
         if (error?.response?.data?.message) {
@@ -68,7 +68,7 @@ const User = () => {
         setIsLoading(false);
       }
     },
-    [_id]
+    [handleGetUserById, _id]
   );
 
   /**

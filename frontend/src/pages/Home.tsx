@@ -51,28 +51,31 @@ const Home = () => {
    * Handle new user creation
    * @param data - User data from form
    */
-  const handleAddUser = useCallback(async (data: UserInput) => {
-    setIsLoading(true);
-    try {
-      // Validate password is not empty
-      if (data.password === "") {
-        toast.error("while creating user, password should not be empty");
-        return;
+  const handleAddUser = useCallback(
+    async (data: UserInput) => {
+      setIsLoading(true);
+      try {
+        // Validate password is not empty
+        if (data.password === "") {
+          toast.error("while creating user, password should not be empty");
+          return;
+        }
+        await api.post("/api/users", data);
+        // Add new user to the list
+        fetchUsers();
+        setIsOpen(false);
+      } catch (error: any) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Network error. Please check your connection.");
+        }
+      } finally {
+        setIsLoading(false);
       }
-      const response = await api.post("/api/users", data);
-      // Add new user to the list
-      setUsers((prev) => [...prev, response.data]);
-      setIsOpen(false);
-    } catch (error: any) {
-      if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Network error. Please check your connection.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [fetchUsers]
+  );
 
   return (
     <>
