@@ -5,7 +5,6 @@ import api from "@src/lib/axios";
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-
 export type User = {
   _id: string;
   username: string;
@@ -16,6 +15,7 @@ const Home = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+
   const fetchUsers = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -40,7 +40,7 @@ const Home = () => {
         return;
       }
       const response = await api.post("/api/users", data);
-      setUsers([...users, response.data]);
+      setUsers((prev) => [...prev, response.data]);
       setIsOpen(false);
     } catch (error) {
       console.error(error);
