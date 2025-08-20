@@ -2,8 +2,8 @@ import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
-import User from "../../models/user.model";
-import { registerSchema } from "./register.controller";
+import User from "../../models/user.model.js";
+import { registerSchema } from "./register.controller.js";
 
 type LoginRequest = z.infer<typeof registerSchema>;
 

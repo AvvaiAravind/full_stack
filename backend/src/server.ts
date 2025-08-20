@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import corsOptions from "./config/corsOptions";
+import corsOptions from "./config/corsOptions.js";
 
 const app = express();
 

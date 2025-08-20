@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { JwtPayload } from "../types/express";
+import { JwtPayload } from "../types/express.js";
 
 /**
  * Middleware to verify JWT token from Authorization header.

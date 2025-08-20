@@ -1,4 +1,4 @@
-import { allowedOrigins } from "./allowedOrigins";
+import { allowedOrigins } from "./allowedOrigins.js";
 
 /**
  * CORS (Cross-Origin Resource Sharing) configuration for the Express server.

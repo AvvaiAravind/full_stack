@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import { z } from "zod";
-import User from "../../models/user.model";
+import User from "../../models/user.model.js";
 
 /**
  * Zod schema for user registration validation.

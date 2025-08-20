@@ -1,8 +1,8 @@
-import connectDB from "./config/dbConn";
-import verifyJWT from "./middleware/verifyJWT.middleware";
-import authRouter from "./routes/auth.router";
-import userRouter from "./routes/user.router";
-import app from "./server";
+import connectDB from "./config/dbConn.js";
+import verifyJWT from "./middleware/verifyJWT.middleware.js";
+import authRouter from "./routes/auth.router.js";
+import userRouter from "./routes/user.router.js";
+import app from "./server.js";
 
 const PORT = process.env.PORT || 3500;
 

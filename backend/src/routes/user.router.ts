@@ -1,10 +1,10 @@
 import express from "express";
-import createUser from "../controllers/user/createUser.controller";
-import deleteUserById from "../controllers/user/deleteUserById.controller";
-import editUserById from "../controllers/user/editUserById.controller";
-import getUserById from "../controllers/user/getUserById.controller";
-import getUsers from "../controllers/user/getUsers.controller";
-import verifyRoles from "../middleware/verifyRoles.middleware";
+import createUser from "../controllers/user/createUser.controller.js";
+import deleteUserById from "../controllers/user/deleteUserById.controller.js";
+import editUserById from "../controllers/user/editUserById.controller.js";
+import getUserById from "../controllers/user/getUserById.controller.js";
+import getUsers from "../controllers/user/getUsers.controller.js";
+import verifyRoles from "../middleware/verifyRoles.middleware.js";
 
 const router = express.Router();
 

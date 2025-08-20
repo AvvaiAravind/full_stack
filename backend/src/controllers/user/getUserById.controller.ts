@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import User from "../../models/user.model";
+import User from "../../models/user.model.js";
 
 const getUserByIdSchema = z.object({
   _id: z.string(),

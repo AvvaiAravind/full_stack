@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { JwtPayload } from "../types/express";
+import { JwtPayload } from "../types/express.js";
 
 /**
  * Middleware to verify user has required roles for specific operations.

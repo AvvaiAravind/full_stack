@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import User from "../../models/user.model";
+import User from "../../models/user.model.js";
 
 const getUsersSchema = z.object({
   roles: z.array(z.enum(["super-admin", "admin", "user"])).optional(),
