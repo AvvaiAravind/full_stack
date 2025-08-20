@@ -9,4 +9,5 @@ export const allowedOrigins = [
   "http://localhost:5177",
   "http://localhost:5178",
   "http://localhost:5179",
+  "https://user-based-authenitication-frontend.onrender.com"
 ];
