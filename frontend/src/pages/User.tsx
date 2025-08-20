@@ -27,13 +27,8 @@ const User = () => {
       const response = await api.get(`/api/users/${_id}`);
       setUserData(response.data);
     } catch (error: any) {
-      if (error.response?.status === 400) {
+      if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
-      } else if (error.response?.status === 404) {
-        toast.error("User not found");
-        navigate("/home");
-      } else if (error.response?.status === 500) {
-        toast.error("Failed to load user. Please try again.");
       } else {
         toast.error("Network error. Please check your connection.");
       }
@@ -52,13 +47,8 @@ const User = () => {
         setUserData(response.data);
         setIsEditing(false);
       } catch (error: any) {
-        if (error.response?.status === 400) {
+        if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
-        } else if (error.response?.status === 404) {
-          toast.error("User not found");
-          navigate("/home");
-        } else if (error.response?.status === 500) {
-          toast.error("Failed to update user. Please try again.");
         } else {
           toast.error("Network error. Please check your connection.");
         }
@@ -77,13 +67,8 @@ const User = () => {
       await api.delete(`/api/users/${_id}`);
       navigate("/home");
     } catch (error: any) {
-      if (error.response?.status === 400) {
+      if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
-      } else if (error.response?.status === 404) {
-        toast.error("User not found");
-        navigate("/home");
-      } else if (error.response?.status === 500) {
-        toast.error("Failed to delete user. Please try again.");
       } else {
         toast.error("Network error. Please check your connection.");
       }

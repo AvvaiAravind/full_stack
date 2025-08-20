@@ -38,12 +38,8 @@ const Login = () => {
       localStorage.setItem("token", response.data.token);
       navigate("/home");
     } catch (error: any) {
-      // Handle different error types
-      if (error.response?.status === 400) {
-        // Show the specific backend error message
+      if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
-      } else if (error.response?.status === 500) {
-        toast.error("Server error. Please try again later.");
       } else {
         toast.error("Login failed. Please check your connection.");
       }

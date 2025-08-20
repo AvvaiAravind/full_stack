@@ -23,10 +23,8 @@ const Home = () => {
       const response = await api.get("/api/users");
       setUsers(response.data);
     } catch (error: any) {
-      if (error.response?.status === 400) {
-        toast.error(error.response.data.message);
-      } else if (error.response?.status === 500) {
-        toast.error("Failed to create user. Please try again.");
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message);
       } else {
         toast.error("Network error. Please check your connection.");
       }
