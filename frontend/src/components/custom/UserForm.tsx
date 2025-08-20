@@ -1,3 +1,7 @@
+/**
+ * User form component - reusable modal form for creating and editing users
+ */
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -20,6 +24,7 @@ import {
 } from "../ui/select";
 import InputFieldComponent from "./InputFiled";
 
+// User input type definition
 export type UserInput = {
   username: string;
   roles: "super-admin" | "admin" | "user";
@@ -27,14 +32,16 @@ export type UserInput = {
   password?: string;
 };
 
+// Component props interface
 type UserFormProps = {
-  user?: UserInput;
+  user?: UserInput; // Optional user data for editing mode
   onSubmit: (data: UserInput) => Promise<void>;
   isOpen: boolean;
   onClose: () => void;
   isLoading: boolean;
 };
 
+// Form validation schema
 const userSchema = z.object({
   username: z.email("Invalid email format"),
   roles: z.enum(["super-admin", "admin", "user"]),
@@ -44,7 +51,7 @@ const userSchema = z.object({
     .min(6, "Password must be at least 6 characters")
     .max(15, "Password must be at most 15 characters")
     .optional()
-    .or(z.literal("")),
+    .or(z.literal("")), // Allow empty string for optional password
 });
 
 type UserFormType = z.infer<typeof userSchema>;
@@ -56,6 +63,7 @@ const UserForm = ({
   isOpen,
   onClose,
 }: UserFormProps) => {
+  // Form setup with validation and default values
   const form = useForm<UserFormType>({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -68,27 +76,33 @@ const UserForm = ({
 
   return (
     <>
-      {/* Backdrop - click to close */}
+      {/* Modal backdrop - click to close */}
       <div
         className="bg-opacity-90 fixed inset-0 bg-gray-100/90 transition-opacity"
         onClick={onClose}
       />
+
+      {/* Modal dialog */}
       <dialog
         className="inset-0 m-auto w-xs max-w-md rounded border p-4 text-black shadow-md"
         open={isOpen}
         onClose={onClose}
       >
+        {/* Modal header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">User Form</h1>
           <Button variant="outline" onClick={onClose}>
             <X />
           </Button>
         </div>
+
+        {/* Form content */}
         <Form {...form}>
           <form
             className="grid grid-cols-2 gap-4"
             onSubmit={form.handleSubmit(onSubmit)}
           >
+            {/* Username field */}
             <InputFieldComponent
               type="email"
               control={form.control}
@@ -98,6 +112,8 @@ const UserForm = ({
                 itemClass: "col-span-2",
               }}
             />
+
+            {/* Role selection dropdown */}
             <FormField
               control={form.control}
               name="roles"
@@ -141,6 +157,8 @@ const UserForm = ({
                 </FormItem>
               )}
             />
+
+            {/* Native language field */}
             <InputFieldComponent
               type="text"
               control={form.control}
@@ -150,6 +168,8 @@ const UserForm = ({
                 itemClass: "col-span-2",
               }}
             />
+
+            {/* Password field (optional for editing) */}
             <InputFieldComponent
               type="text"
               control={form.control}
@@ -159,6 +179,8 @@ const UserForm = ({
                 itemClass: "col-span-2",
               }}
             />
+
+            {/* Submit button */}
             <Button
               className="col-span-2 cursor-pointer border-black"
               type="submit"

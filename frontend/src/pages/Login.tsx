@@ -1,3 +1,7 @@
+/**
+ * Login page component - handles user authentication with form validation
+ */
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputFieldComponent from "@src/components/custom/InputFiled";
 import { Button } from "@src/components/ui/button";
@@ -8,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
+// Form validation schema
 const loginSchema = z.object({
   username: z.email("Invalid email format"),
   password: z
@@ -21,6 +26,7 @@ type LoginFormType = z.infer<typeof loginSchema>;
 const Login = () => {
   const navigate = useNavigate();
 
+  // Form setup with validation
   const form = useForm<LoginFormType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -31,13 +37,19 @@ const Login = () => {
 
   const { isSubmitting } = form.formState;
 
+  /**
+   * Handle form submission - authenticate user and store token
+   * @param data - Form data with username and password
+   */
   const onSubmit = async (data: LoginFormType) => {
     try {
       const response = await api.post("/api/auth/login", data);
       console.log(response);
+      // Store JWT token in localStorage
       localStorage.setItem("token", response.data.token);
       navigate("/home");
     } catch (error: any) {
+      // Display error message from backend or fallback
       if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
@@ -53,6 +65,7 @@ const Login = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-2 place-content-center gap-4 rounded-md border p-8 shadow-md"
         >
+          {/* Username/email input field */}
           <InputFieldComponent
             control={form.control}
             type="email"
@@ -66,6 +79,7 @@ const Login = () => {
               itemClass: "col-span-2",
             }}
           />
+          {/* Password input field */}
           <InputFieldComponent
             control={form.control}
             type="password"
@@ -76,6 +90,7 @@ const Login = () => {
               itemClass: "col-span-2",
             }}
           />
+          {/* Form action buttons */}
           <Button
             className="col-span-1 cursor-pointer border-black hover:bg-gray-100"
             type="button"

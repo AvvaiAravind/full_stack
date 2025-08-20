@@ -1,3 +1,7 @@
+/**
+ * Home page component - displays user list and handles user creation
+ */
+
 import UserForm, { UserInput } from "@src/components/custom/UserForm";
 import UserList from "@src/components/custom/UserList";
 import { Button } from "@src/components/ui/button";
@@ -6,6 +10,7 @@ import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+// User type definition
 export type User = {
   _id: string;
   username: string;
@@ -17,12 +22,16 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
 
+  /**
+   * Fetch all users from the API
+   */
   const fetchUsers = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await api.get("/api/users");
       setUsers(response.data);
     } catch (error: any) {
+      // Display error message from backend or fallback
       if (error?.response?.data?.message) {
         toast.error(error?.response?.data?.message);
       } else {
@@ -33,18 +42,25 @@ const Home = () => {
     }
   }, []);
 
+  // Load users on component mount
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  /**
+   * Handle new user creation
+   * @param data - User data from form
+   */
   const handleAddUser = useCallback(async (data: UserInput) => {
     setIsLoading(true);
     try {
+      // Validate password is not empty
       if (data.password === "") {
         toast.error("while creating user, password should not be empty");
         return;
       }
       const response = await api.post("/api/users", data);
+      // Add new user to the list
       setUsers((prev) => [...prev, response.data]);
       setIsOpen(false);
     } catch (error: any) {
@@ -60,6 +76,7 @@ const Home = () => {
 
   return (
     <>
+      {/* User creation modal */}
       {isOpen && (
         <UserForm
           onSubmit={handleAddUser}
@@ -70,6 +87,7 @@ const Home = () => {
       )}
 
       <div className="mx-auto h-full w-full max-w-md">
+        {/* Header with title and add button */}
         <div className="flex items-center justify-between">
           <h1 className="text-center text-2xl font-bold">Users</h1>
           <Button
@@ -80,12 +98,16 @@ const Home = () => {
             <Plus /> Add User
           </Button>
         </div>
+
+        {/* Loading state */}
         {isLoading && <p className="text-center">Loading...</p>}
 
+        {/* Empty state */}
         {!isLoading && users.length === 0 && (
           <p className="text-center">No users found</p>
         )}
 
+        {/* User list */}
         {!isLoading && users.length > 0 && (
           <ul className="mt-4 flex h-full w-full flex-col items-center gap-2">
             {users.map((user) => (

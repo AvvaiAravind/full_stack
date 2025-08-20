@@ -1,3 +1,7 @@
+/**
+ * User detail page component - displays, edits, and deletes individual users
+ */
+
 import UserForm, { UserInput } from "@src/components/custom/UserForm";
 import { Button } from "@src/components/ui/button";
 import api from "@src/lib/axios";
@@ -6,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
+// User type definition with role constraints
 export type IUser = {
   _id: string;
   username: string;
@@ -21,6 +26,9 @@ const User = () => {
   const navigate = useNavigate();
   const { _id } = useParams();
 
+  /**
+   * Fetch user data by ID from the API
+   */
   const handleGetUserById = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -37,6 +45,10 @@ const User = () => {
     }
   }, [_id]);
 
+  /**
+   * Handle user data updates
+   * @param data - Updated user data from form
+   */
   const handleEditUser = useCallback(
     async (data: UserInput) => {
       if (!_id) return;
@@ -59,6 +71,9 @@ const User = () => {
     [_id]
   );
 
+  /**
+   * Handle user deletion
+   */
   const handleDeleteUser = useCallback(async () => {
     if (!_id) return;
 
@@ -77,12 +92,14 @@ const User = () => {
     }
   }, [_id]);
 
+  // Load user data on component mount
   useEffect(() => {
     if (_id) {
       handleGetUserById();
     }
   }, [handleGetUserById]);
 
+  // Loading state
   if (!userData) {
     return (
       <div className="w-full p-4">
@@ -99,6 +116,7 @@ const User = () => {
 
   return (
     <>
+      {/* User editing modal */}
       {isEditing && userData && (
         <UserForm
           user={userData}
@@ -110,6 +128,7 @@ const User = () => {
       )}
 
       <div className="w-full">
+        {/* Header with navigation and actions */}
         <div className="mb-6 flex items-center justify-between">
           <Button
             className="border-black text-sm hover:cursor-pointer sm:text-base"
@@ -134,8 +153,10 @@ const User = () => {
           </Button>
         </div>
 
+        {/* User information display */}
         <div className="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {/* Delete button */}
             <Button
               className="justify-self-end border-none sm:col-span-2"
               type="button"
@@ -144,6 +165,8 @@ const User = () => {
             >
               <Trash className="h-4 w-4" />
             </Button>
+
+            {/* User details - left column */}
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-600">
@@ -162,6 +185,7 @@ const User = () => {
               </div>
             </div>
 
+            {/* User details - right column */}
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-600">
