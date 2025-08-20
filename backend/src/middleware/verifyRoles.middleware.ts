@@ -8,16 +8,21 @@ import { JwtPayload } from "../types/express.js";
 const verifyRoles = (...allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-      return res.status(401).json({ error: "Authentication required" });
+      return res.status(401).json({
+        error: "Authentication required",
+        message: "Authentication required",
+      });
     }
 
     const userRoles = (req.user as JwtPayload).roles;
 
     if (!userRoles) {
-      return res.status(403).json({ error: "No roles assigned" });
+      return res.status(403).json({
+        error: "No roles assigned",
+        message: "No roles assigned",
+      });
     }
 
-    // Check if user has any of the allowed roles
     const hasRole = allowedRoles.includes(userRoles);
 
     if (!hasRole) {
@@ -25,6 +30,7 @@ const verifyRoles = (...allowedRoles: string[]) => {
         error: "Insufficient permissions",
         required: allowedRoles,
         current: userRoles,
+        message: `Insufficient permissions - ${userRoles}`,
       });
     }
 
