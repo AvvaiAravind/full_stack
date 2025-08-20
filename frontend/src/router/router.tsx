@@ -6,9 +6,9 @@ import Home from "@src/pages/Home";
 import Login from "@src/pages/Login";
 import Register from "@src/pages/Register";
 import User from "@src/pages/User";
-import { createBrowserRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Layout />,
