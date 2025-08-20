@@ -1,3 +1,7 @@
+/**
+ * User authentication controller - handles login and JWT token generation
+ */
+
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -23,7 +27,7 @@ const loginController = async (
   res: Response
 ) => {
   try {
-    // Validate request body
+    // Validate request body using Zod schema
     const validationResult = registerSchema.safeParse(req.body);
 
     if (!validationResult.success) {
@@ -36,7 +40,7 @@ const loginController = async (
 
     const { username, password } = validationResult.data;
 
-    // Check if user exists
+    // Find user by username
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -46,7 +50,7 @@ const loginController = async (
       });
     }
 
-    // Verify password
+    // Verify password using bcrypt
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
 
     if (!isPasswordCorrect) {
@@ -55,12 +59,12 @@ const loginController = async (
         .json({ error: "Invalid credentials", message: "Invalid credentials" });
     }
 
-    // Check JWT secret exists
+    // Ensure JWT secret is configured
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not configured");
     }
 
-    // Generate JWT token
+    // Generate JWT token with user data
     const token = jwt.sign(
       {
         userId: user._id,
@@ -73,6 +77,7 @@ const loginController = async (
       }
     );
 
+    // Return success response with token and user data
     res.status(200).json({
       message: "Login successful",
       token,
@@ -86,7 +91,10 @@ const loginController = async (
     console.error("Login error:", error);
     res
       .status(500)
-      .json({ error: "Internal server error", message: "Internal server error" });
+      .json({
+        error: "Internal server error",
+        message: "Internal server error",
+      });
   }
 };
 

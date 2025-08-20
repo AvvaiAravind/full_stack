@@ -1,8 +1,13 @@
+/**
+ * User editing controller - updates user information with partial updates
+ */
+
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import { z } from "zod";
 import User from "../../models/user.model.js";
 
+// Schema for user update validation (all fields optional for PATCH)
 const editUserByIdSchema = z.object({
   username: z.string().optional(),
   roles: z.enum(["super-admin", "admin", "user"]).optional(),
@@ -10,19 +15,30 @@ const editUserByIdSchema = z.object({
   password: z.string().optional(),
 });
 
+// Schema for user ID validation
 const idSchema = z.object({
   _id: z.string(),
 });
 
 type IdSchema = z.infer<typeof idSchema>;
-
 type EditUserByIdBody = z.infer<typeof editUserByIdSchema>;
 
+/**
+ * Edit user by ID controller.
+ *
+ * Handles user information updates with partial data support (PATCH operation).
+ * Validates user existence, prevents duplicate usernames, and hashes passwords.
+ *
+ * @param req - Express request object with user ID in params and update data in body
+ * @param res - Express response object
+ * @returns JSON response with updated user data or error message
+ */
 const editUserById = async (
   req: Request<IdSchema, {}, EditUserByIdBody, {}>,
   res: Response
 ) => {
   try {
+    // Validate request body and parameters
     const validatedBody = editUserByIdSchema.safeParse(req.body);
     const validatedId = idSchema.safeParse(req.params);
 
@@ -45,12 +61,14 @@ const editUserById = async (
     const { _id } = validatedId.data;
     const { username, roles, native, password } = validatedBody.data;
 
+    // Build update object with only provided fields
     const updateData: any = {};
 
     if (username) {
+      // Check for duplicate username (excluding current user)
       const existingUser = await User.findOne({
         username,
-        _id: { $ne: _id },
+        _id: { $ne: _id }, // Not equal to current user
       });
 
       if (existingUser) {
@@ -71,9 +89,11 @@ const editUserById = async (
     }
 
     if (password) {
+      // Hash password if provided
       updateData.password = await bcryptjs.hash(password, 10);
     }
 
+    // Update user with only provided fields using $set
     const user = await User.findByIdAndUpdate(
       _id,
       { $set: updateData },

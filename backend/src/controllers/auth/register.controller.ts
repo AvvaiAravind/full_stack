@@ -1,3 +1,7 @@
+/**
+ * User registration controller - handles new user creation with validation
+ */
+
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import { z } from "zod";
@@ -34,7 +38,7 @@ const registerController = async (
   res: Response
 ) => {
   try {
-    // Validate the request body
+    // Validate request body using Zod schema
     const validationResult = registerSchema.safeParse(req.body);
 
     if (!validationResult.success) {
@@ -46,22 +50,23 @@ const registerController = async (
 
     const { username, password } = validationResult.data;
 
-    // Check if user already exists
+    // Check for existing user to prevent duplicates
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(409).json({ error: "User already exists" });
     }
 
-    // Hash password
+    // Hash password for secure storage
     const hashedPassword = await bcryptjs.hash(password, 10);
 
-    // Create new user
+    // Create new user with default "user" role
     const newUser = await User.create({
       username,
       password: hashedPassword,
       roles: "user",
     });
 
+    // Return success response (password excluded by model transform)
     res.status(201).json({
       message: "User created successfully",
       username: newUser.username,

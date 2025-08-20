@@ -6,18 +6,20 @@ import app from "./server.js";
 
 const PORT = process.env.PORT || 3500;
 
-connectDB(); // connect to the database
+// connect to the database
+connectDB();
 
-// public routes
+// public routes (not auth required)
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 app.use("/api/auth", authRouter);
 
-// protected routes
+// protected routes (auth required)
 app.use(verifyJWT);
 app.use("/api/users", userRouter);
 
+// start the server (port 3500)
 app
   .listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

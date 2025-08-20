@@ -1,3 +1,7 @@
+/**
+ * Role-based authorization middleware - checks user permissions for specific operations
+ */
+
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "../types/express.js";
 
@@ -7,6 +11,7 @@ import { JwtPayload } from "../types/express.js";
  */
 const verifyRoles = (...allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    // Ensure user is authenticated (should be set by verifyJWT)
     if (!req.user) {
       return res.status(401).json({
         error: "Authentication required",
@@ -16,6 +21,7 @@ const verifyRoles = (...allowedRoles: string[]) => {
 
     const userRoles = (req.user as JwtPayload).roles;
 
+    // Check if user has any roles assigned
     if (!userRoles) {
       return res.status(403).json({
         error: "No roles assigned",
@@ -23,6 +29,7 @@ const verifyRoles = (...allowedRoles: string[]) => {
       });
     }
 
+    // Verify user has one of the required roles
     const hasRole = allowedRoles.includes(userRoles);
 
     if (!hasRole) {

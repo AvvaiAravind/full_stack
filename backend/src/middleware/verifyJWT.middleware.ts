@@ -1,3 +1,7 @@
+/**
+ * JWT authentication middleware - verifies tokens and adds user data to request
+ */
+
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../types/express.js";
@@ -9,6 +13,7 @@ import { JwtPayload } from "../types/express.js";
 const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req?.headers?.authorization;
 
+  // Check for Bearer token in Authorization header
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({
       error: "Access token required",
@@ -18,6 +23,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
 
   const token = authHeader?.split(" ")[1];
 
+  // Validate JWT secret exists
   if (!process.env.JWT_SECRET) {
     return res.status(500).json({
       error: "Internal server error",
@@ -26,10 +32,12 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
+    // Verify and decode JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     req.user = decoded;
     next();
   } catch (error) {
+    // Token is invalid or expired
     return res.status(403).json({
       error: "Invalid or expired token",
       message: "Invalid or expired token",

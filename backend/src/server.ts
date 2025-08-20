@@ -1,16 +1,20 @@
+/**
+ * Express app configuration - middleware setup
+ */
+
 import cors from "cors";
 import express from "express";
 import corsOptions from "./config/corsOptions.js";
 
 const app = express();
 
-//cors
+// CORS configuration for cross-origin requests
 app.use(cors(corsOptions));
 
-// Middleware to parse JSON
+// Parse JSON request bodies
 app.use(express.json());
 
-// Middleware to parse URL-encoded data
+// Parse URL-encoded form data
 app.use(express.urlencoded({ extended: false }));
 
 export default app;

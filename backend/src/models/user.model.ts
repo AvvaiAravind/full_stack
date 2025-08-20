@@ -1,3 +1,7 @@
+/**
+ * User model schema with role-based authentication
+ */
+
 import { Document, model, Schema } from "mongoose";
 
 export interface IUser extends Document {
@@ -20,6 +24,7 @@ const userSchema = new Schema<IUser>(
     native: { type: String, required: true },
   },
   {
+    // Remove password from JSON responses for security
     toJSON: {
       transform: (_doc, ret: Record<string, any>) => {
         delete ret.password;
