@@ -40,6 +40,9 @@ const deleteUserById = async (
     }
 
     const { _id } = validationResult.data;
+    const currentUserId = req.user?.userId;
+
+    const isSelfDeletion = currentUserId === _id;
 
     // Find and delete user by ID
     const user = await User.findByIdAndDelete(_id);
@@ -48,6 +51,13 @@ const deleteUserById = async (
       return res.status(404).json({
         error: "User not found",
         message: "User not found",
+      });
+    }
+
+    if (isSelfDeletion) {
+      return res.status(401).json({
+        error: "Cannot delete yourself",
+        message: "Cannot delete yourself",
       });
     }
 
