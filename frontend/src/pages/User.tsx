@@ -4,6 +4,7 @@ import api from "@src/lib/axios";
 import { ArrowLeft, Edit, Trash } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 export type IUser = {
   _id: string;
@@ -25,8 +26,17 @@ const User = () => {
     try {
       const response = await api.get(`/api/users/${_id}`);
       setUserData(response.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        toast.error(error.response.data.message);
+      } else if (error.response?.status === 404) {
+        toast.error("User not found");
+        navigate("/home");
+      } else if (error.response?.status === 500) {
+        toast.error("Failed to load user. Please try again.");
+      } else {
+        toast.error("Network error. Please check your connection.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -41,8 +51,17 @@ const User = () => {
         const response = await api.patch(`/api/users/${_id}`, data);
         setUserData(response.data);
         setIsEditing(false);
-      } catch (error) {
-        console.error("Failed to update user:", error);
+      } catch (error: any) {
+        if (error.response?.status === 400) {
+          toast.error(error.response.data.message);
+        } else if (error.response?.status === 404) {
+          toast.error("User not found");
+          navigate("/home");
+        } else if (error.response?.status === 500) {
+          toast.error("Failed to update user. Please try again.");
+        } else {
+          toast.error("Network error. Please check your connection.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -57,8 +76,17 @@ const User = () => {
     try {
       await api.delete(`/api/users/${_id}`);
       navigate("/home");
-    } catch (error) {
-      console.error("Failed to delete user:", error);
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        toast.error(error.response.data.message);
+      } else if (error.response?.status === 404) {
+        toast.error("User not found");
+        navigate("/home");
+      } else if (error.response?.status === 500) {
+        toast.error("Failed to delete user. Please try again.");
+      } else {
+        toast.error("Network error. Please check your connection.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +107,7 @@ const User = () => {
             Back
           </Button>
         </div>
-        <div>Loading...</div>
+        <div className="text-center">Loading...</div>
       </div>
     );
   }

@@ -28,6 +28,7 @@ const createUser = async (
       return res.status(400).json({
         error: "Validation failed",
         details: validatedBody.error.message,
+        message: "Validation failed",
       });
     }
 
@@ -36,7 +37,10 @@ const createUser = async (
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({
+        error: "User already exists",
+        message: "User already exists",
+      });
     }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
@@ -50,7 +54,10 @@ const createUser = async (
 
     res.status(201).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: "Internal server error",
+    });
   }
 };
 

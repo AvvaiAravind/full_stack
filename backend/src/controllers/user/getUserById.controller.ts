@@ -19,6 +19,7 @@ const getUserById = async (
       return res.status(400).json({
         error: "Validation failed",
         details: validationResult.error.message,
+        message: "Validation failed",
       });
     }
 
@@ -27,12 +28,18 @@ const getUserById = async (
     const user = await User.findById(_id).select("-password");
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        error: "User not found",
+        message: "User not found",
+      });
     }
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: "Internal server error",
+    });
   }
 };
 

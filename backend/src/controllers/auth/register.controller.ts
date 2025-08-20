@@ -7,6 +7,7 @@ import User from "../../models/user.model.js";
  * Zod schema for user registration validation.
  * Ensures email format and minimum password length.
  */
+
 export const registerSchema = z.object({
   username: z.email("Invalid email format"),
   password: z

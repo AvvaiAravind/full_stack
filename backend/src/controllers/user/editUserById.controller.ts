@@ -30,6 +30,7 @@ const editUserById = async (
       return res.status(400).json({
         error: "Validation failed",
         details: validatedBody.error.message,
+        message: "Validation failed",
       });
     }
 
@@ -37,6 +38,7 @@ const editUserById = async (
       return res.status(400).json({
         error: "Validation failed",
         details: validatedId.error.message,
+        message: "Validation failed",
       });
     }
 
@@ -52,7 +54,10 @@ const editUserById = async (
       });
 
       if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
+        return res.status(400).json({
+          error: "Username already exists",
+          message: "Username already exists",
+        });
       }
       updateData.username = username;
     }
@@ -76,12 +81,18 @@ const editUserById = async (
     );
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        error: "User not found",
+        message: "User not found",
+      });
     }
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: "Internal server error",
+    });
   }
 };
 

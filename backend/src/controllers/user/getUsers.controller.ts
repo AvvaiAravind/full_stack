@@ -20,6 +20,7 @@ const getUsers = async (
       return res.status(400).json({
         error: "Validation failed",
         details: validationResult.error.message,
+        message: "Validation failed",
       });
     }
 
@@ -34,7 +35,10 @@ const getUsers = async (
 
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: "Internal server error",
+    });
   }
 };
 

@@ -5,6 +5,7 @@ import { Form } from "@src/components/ui/form";
 import api from "@src/lib/axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -36,8 +37,16 @@ const Login = () => {
       console.log(response);
       localStorage.setItem("token", response.data.token);
       navigate("/home");
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      // Handle different error types
+      if (error.response?.status === 400) {
+        // Show the specific backend error message
+        toast.error(error.response.data.message);
+      } else if (error.response?.status === 500) {
+        toast.error("Server error. Please try again later.");
+      } else {
+        toast.error("Login failed. Please check your connection.");
+      }
     }
   };
 

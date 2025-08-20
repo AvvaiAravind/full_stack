@@ -17,6 +17,7 @@ type LoginRequest = z.infer<typeof registerSchema>;
  * @param res - Express response object
  * @returns JSON response with JWT token or error message
  */
+
 const loginController = async (
   req: Request<{}, {}, LoginRequest, {}>,
   res: Response
@@ -29,6 +30,7 @@ const loginController = async (
       return res.status(400).json({
         error: "Validation failed",
         details: validationResult.error.message,
+        message: "Invalid credentials",
       });
     }
 
@@ -38,14 +40,19 @@ const loginController = async (
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(400).json({
+        error: "user not found",
+        message: "user not found",
+      });
     }
 
     // Verify password
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res
+        .status(400)
+        .json({ error: "Invalid credentials", message: "Invalid credentials" });
     }
 
     // Check JWT secret exists
@@ -77,7 +84,9 @@ const loginController = async (
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "Internal server error", message: "Internal server error" });
   }
 };
 

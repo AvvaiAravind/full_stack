@@ -4,6 +4,7 @@ import { Button } from "@src/components/ui/button";
 import api from "@src/lib/axios";
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export type User = {
   _id: string;
@@ -21,8 +22,14 @@ const Home = () => {
     try {
       const response = await api.get("/api/users");
       setUsers(response.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        toast.error(error.response.data.message);
+      } else if (error.response?.status === 500) {
+        toast.error("Failed to create user. Please try again.");
+      } else {
+        toast.error("Network error. Please check your connection.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -36,14 +43,20 @@ const Home = () => {
     setIsLoading(true);
     try {
       if (data.password === "") {
-        console.log("while creating user, password should not be empty");
+        toast.error("while creating user, password should not be empty");
         return;
       }
       const response = await api.post("/api/users", data);
       setUsers((prev) => [...prev, response.data]);
       setIsOpen(false);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        toast.error(error.response.data.message);
+      } else if (error.response?.status === 500) {
+        toast.error("Failed to load users. Please try again.");
+      } else {
+        toast.error("Network error. Please check your connection.");
+      }
     } finally {
       setIsLoading(false);
     }
