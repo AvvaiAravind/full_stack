@@ -34,6 +34,10 @@ const Home = () => {
   const handleAddUser = useCallback(async (data: UserInput) => {
     setIsLoading(true);
     try {
+      if (data.password === "") {
+        console.log("while creating user, password should not be empty");
+        return;
+      }
       const response = await api.post("/api/users", data);
       setUsers([...users, response.data]);
       setIsOpen(false);
