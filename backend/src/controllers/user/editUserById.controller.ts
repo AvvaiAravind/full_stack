@@ -1,10 +1,13 @@
+import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import { z } from "zod";
 import User from "../../models/user.model";
 
 const editUserByIdSchema = z.object({
-  username: z.string(),
-  roles: z.enum(["super-admin", "admin", "user"]),
+  username: z.string().optional(),
+  roles: z.enum(["super-admin", "admin", "user"]).optional(),
+  native: z.string().optional(),
+  password: z.string().optional(),
 });
 
 const idSchema = z.object({
@@ -38,18 +41,38 @@ const editUserById = async (
     }
 
     const { _id } = validatedId.data;
-    const { username, roles } = validatedBody.data;
+    const { username, roles, native, password } = validatedBody.data;
 
-    const existingUser = await User.findOne({ username });
+    const updateData: any = {};
 
-    if (existingUser) {
-      return res.status(400).json({ message: "Username already exists" });
+    if (username) {
+      const existingUser = await User.findOne({
+        username,
+        _id: { $ne: _id },
+      });
+
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+      updateData.username = username;
+    }
+
+    if (roles) {
+      updateData.roles = roles;
+    }
+
+    if (native) {
+      updateData.native = native;
+    }
+
+    if (password) {
+      updateData.password = await bcryptjs.hash(password, 10);
     }
 
     const user = await User.findByIdAndUpdate(
       _id,
-      { username, roles },
-      { new: true }
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
 
     if (!user) {

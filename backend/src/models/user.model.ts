@@ -4,6 +4,7 @@ export interface IUser extends Document {
   username: string;
   password: string;
   roles: "super-admin" | "admin" | "user";
+  native: string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -16,6 +17,7 @@ const userSchema = new Schema<IUser>(
       enum: ["super-admin", "admin", "user"],
       default: "user",
     },
+    native: { type: String, required: true },
   },
   {
     toJSON: {

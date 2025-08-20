@@ -14,7 +14,7 @@ router.get("/:_id", getUserById);
 
 router.post("/", verifyRoles("super-admin", "admin"), createUser);
 
-router.put("/:_id", verifyRoles("super-admin", "admin"), editUserById);
+router.patch("/:_id", verifyRoles("super-admin", "admin"), editUserById);
 
 router.delete("/:_id", verifyRoles("super-admin"), deleteUserById);
 

@@ -9,7 +9,10 @@ import User from "../../models/user.model";
  */
 export const registerSchema = z.object({
   username: z.email("Invalid email format"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .max(15, "Password must be at most 8 characters"),
 });
 
 type RegisterRequest = z.infer<typeof registerSchema>;
