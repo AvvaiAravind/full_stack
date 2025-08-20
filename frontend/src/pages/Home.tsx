@@ -48,10 +48,8 @@ const Home = () => {
       setUsers((prev) => [...prev, response.data]);
       setIsOpen(false);
     } catch (error: any) {
-      if (error.response?.status === 400) {
+      if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
-      } else if (error.response?.status === 500) {
-        toast.error("Failed to load users. Please try again.");
       } else {
         toast.error("Network error. Please check your connection.");
       }
